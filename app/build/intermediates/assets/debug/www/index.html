@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>LOSEC</title>
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<script src="js/jquery.min.js"></script>
+		<script src="js/config.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-panels.min.js"></script>
+		<script src="js/parse.js"></script>
+		<script src="js/init.js"></script>
+		<script type="text/javascript" language="JavaScript" src="js/jquery.i18n.properties-min.js"></script>
+		<script src="http://www.parsecdn.com/js/parse-1.2.12.min.js"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true&v=3&libraries=geometry"></script>
+		<script type="text/javascript">
+			function setFiltres(){
+				window.localStorage.setItem("filtrekm", document.getElementById("myonoffswitch3").checked);
+				window.localStorage.setItem("Asc", document.getElementById("myonoffswitch1").checked);
+				window.localStorage.setItem("Desc", document.getElementById("myonoffswitch2").checked);
+				window.localStorage.setItem("Dificultat", document.getElementById("myonoffswitch4").checked);
+			}
+		</script>	
+		<noscript>
+			<link rel="stylesheet" href="css/skel-noscript.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-mobile.css" />
+		</noscript>
+	</head>
+	<body onload="recuperaSegmentsInicials()">
+
+		<!-- Header -->
+			<div id="header-wrapper">
+				<header id="header" class="container">
+					<div class="row">
+						<div class="12u">
+						
+							<!-- Logo -->
+								<h1><a href="#" id="logo">Losec</a></h1>
+							
+							<!-- Nav -->
+								<nav id="nav">
+									<a href="index.html">Homepage</a>
+									<a href="ListOfSegments.html">List of Segments</a>
+									<a href="About.html">About</a>
+								</nav>
+
+						</div>
+					</div>
+				</header>
+				<div id="banner">
+					<div class="container">
+						<div class="row">
+							<div class="6u">
+								<p>Here you can find segments to ride. Look for it here ...</p>
+								<a onclick="setFiltres()" href="MapForSegments.html" class="button-big">Find a Segment!</a>
+							</div>
+						</div>
+					</div>
+					<div class="container">
+						<div class="row">
+							<div class="6u">
+								<ul class="link-list last-child" id="filtres">
+									<table>								
+										<tr>
+											<td><p>Options</p></td>
+										</tr>
+										<tr>
+											<td></td>
+											<td align="left"><h2>Ascending segment:</h2></td>
+											<td>
+												<li id="filtre1">
+													<div class="onoffswitch">
+											    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch1" >
+											    		<label class="onoffswitch-label" for="myonoffswitch1">
+												    		<div class="onoffswitch-inner">
+													    		<div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+												    			<div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+												    		</div>
+														</label>
+													</div>
+												</li>
+											</td>
+										</tr>
+										<tr>
+											<td></td>
+											<td align="left"><h2>Descending segment (DH):</h2></td>
+											<td> 
+												<li id="filtre2">
+													<div class="onoffswitch">
+											    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch2">
+											    		<label class="onoffswitch-label" for="myonoffswitch2">
+												    		<div class="onoffswitch-inner">
+													    		<div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+												    			<div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+												    		</div>
+														</label>
+													</div>
+												</li>
+											</td>
+										</tr>
+										<tr>
+											<td></td>
+											<td align="left"><h2>Km limit:</h2></td>
+											<td>
+												<li id="filtre3">
+													<div class="onoffswitch">
+											    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch3" >
+											    		<label class="onoffswitch-label" for="myonoffswitch3">
+												    		<div class="onoffswitch-inner">
+													    		<div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+												    			<div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+												    		</div>
+														</label>
+													</div>
+												</li>
+											</td>
+										</tr>
+										<tr>
+											<td></td>
+											<td align="left"><h2>Difficulty:</h2></td>
+											<td>
+												<li id="filtre4">
+													<div class="onoffswitch">
+											    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch4">
+											    		<label class="onoffswitch-label" for="myonoffswitch4">
+												    		<div class="onoffswitch-inner">
+													    		<div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+												    			<div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+												    		</div>
+														</label>
+													</div>
+												</li>
+											</td>
+										</tr>
+									</table>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<!-- Copyright -->
+			<div id="copyright">
+				&copy; LOSEC. All rights reserved. | Xavier Fernàndez Soler
+			</div>
+	</body>
+</html>

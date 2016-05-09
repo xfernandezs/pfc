@@ -1,0 +1,271 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>List of Segments - Ready to ride?</title>
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery-latest.js"></script>
+		<script src="js/config.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-panels.min.js"></script>
+		<script src="js/parse.js"></script>
+		<script src="js/init.js"></script>
+		<script src="js/tumblr.js"></script>
+		<script type="text/javascript" language="JavaScript" src="js/jquery.i18n.properties-min.js"></script>
+		<script src="http://www.parsecdn.com/js/parse-1.2.12.min.js"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true&v=3&libraries=geometry"></script>
+		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="css/skel-noscript.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-mobile.css" />
+		</noscript>
+		<script type="text/javascript">
+			function canvia(){
+				
+				var filtre1 = document.getElementById("myonoffswitch1").checked;
+				var filtre2 = document.getElementById("myonoffswitch2").checked;
+				var filtre3 = document.getElementById("myonoffswitch3").checked;
+				var filtre4 = document.getElementById("myonoffswitch4").checked;
+				window.localStorage.setItem("filtre1LlistaSegments", filtre1);
+				window.localStorage.setItem("filtre2LlistaSegments", filtre2);
+				window.localStorage.setItem("filtre3LlistaSegments", filtre3);
+				window.localStorage.setItem("filtre4LlistaSegments", filtre4);
+				if(filtre1!=false || filtre2!=false || filtre3!=false || filtre4!=false){
+					var llistaVisibleSegments = document.getElementById("llistaVisibleSegments").style.display= "none";
+					iniciaSegmentAmbFiltre();
+					var llistaVisibleSegments = document.getElementById("llistaVisibleSegments").style.display= "block";
+					document.getElementById("taulaLlistaSegments").style.display= "block";
+					
+				}else{
+					var llistaVisibleSegments = document.getElementById("llistaVisibleSegments").style.display= "none";
+					inicia();
+					var llistaVisibleSegments = document.getElementById("llistaVisibleSegments").style.display= "block";
+					document.getElementById("taulaLlistaSegments").style.display= "block";
+					
+				}
+			}
+			
+			$(document).ready(function () {
+				
+			    $('#mostra').click(function () {
+			    	if ($('#taulaFiltres').is(':hidden')) {
+			        	$('#taulaFiltres').toggle('1000');
+			        	$('#mostra').removeClass('arrow-down').addClass('arrow-up');
+			       	} else {
+			       		$('#taulaFiltres').toggle('1000');
+			        	$('#mostra').removeClass('arrow-up').addClass('arrow-down');
+			       	}
+			    });
+			});
+			
+			$(document).ready(function () {
+				
+			    $('#mostra2').click(function () {
+			    	if ($('#taulaLlistaSegments').is(':hidden')) {
+			        	$('#taulaLlistaSegments').toggle('1000');
+			        	$('#mostra2').removeClass('arrow-down').addClass('arrow-up');
+			       	} else {
+			       		$('#taulaLlistaSegments').toggle('1000');
+			        	$('#mostra2').removeClass('arrow-up').addClass('arrow-down');
+			       	}
+			    });
+			});
+			
+			$(document).ready(function () {
+			
+				$('#llistaSegments').on('click', 'li',function() {
+					var ids = $(this).attr('id'); //Retorna el id del li
+					var primerdiv=$('#'+ids).find('div').attr('id'); // retorna lid del arrow-right
+					var box = $('#'+ids).find('div.hidden').attr('id');
+					if($('#'+box).is(':hidden')){
+						$('#'+primerdiv).removeClass('arrow-right').addClass('arrow-down');
+						$('#'+box).toggle();
+					}else{
+						$('#'+box).toggle();
+						$('#'+primerdiv).removeClass('arrow-down').addClass('arrow-right');
+					}
+					
+					
+					
+				});
+			});
+
+			
+			
+		</script>
+	</head>
+	<body class="subpage" onload="inicia()">
+		<!-- Header -->
+		<div id="header-wrapper">
+			<header id="header" class="container">
+				<div class="row">
+					<div class="12u">
+					<!-- Logo -->
+						<h1><a href="#" id="logo">Losec</a></h1>
+					
+					<!-- Nav -->
+						<nav id="nav">
+							<a href="index.html">Homepage</a>
+							<a href="MapForSegments.html">Look for a Segments in a Map</a>
+							<a href="About.html">About</a>
+						</nav>
+					</div>
+				</div>
+			</header>
+		</div>
+
+		<!-- Content -->
+		<div id="content-wrapper">
+			<div id="content">
+				<div class="container">
+					<div class="row">
+						<div class="12u">
+							<!-- Main Content -->
+							<section>
+								<header>
+									<h2>List of Segments</h2>
+									<h3>Here you can find a list of segments near your position (+-20Km)</h3>
+								</header>
+
+							</section>
+							<section>
+							
+								<div class="container">
+									<div class="row">
+										<div class="6u">
+											<table>
+												<tr>
+													<td><h2>Options</h2></td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><div id="mostra" class="arrow-down"></div></td>
+												</tr>
+											</table>
+											
+											<ul class="link-list last-child" id="filtres">
+												<table id="taulaFiltres" class="hidden">								
+													<tr>
+														<td>&nbsp;</td>
+													</tr>
+													<tr>
+														<td></td>
+														<td align="left"><h3>Ascending segment:</h3></td>
+														<td>
+															<li id="filtre1">
+																<div class="onoffswitch">
+														    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch1" onclick="canvia()">
+														    		<label class="onoffswitch-label" for="myonoffswitch1">
+															    		<div class="onoffswitch-inner">
+																    		<div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+															    			<div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+															    		</div>
+																	</label>
+																</div>
+															</li>
+														</td>
+													</tr>
+													<tr>
+														<td></td>
+														<td align="left"><h3>Descending segment (DH):</h3></td>
+														<td> 
+															<li id="filtre2">
+																<div class="onoffswitch">
+														    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch2" onclick="canvia()">
+														    		<label class="onoffswitch-label" for="myonoffswitch2">
+															    		<div class="onoffswitch-inner">
+																    		<div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+															    			<div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+															    		</div>
+																	</label>
+																</div>
+															</li>
+														</td>
+													</tr>
+													<tr>
+														<td></td>
+														<td align="left"><h3>Km limit:</h3></td>
+														<td>
+															<li id="filtre3">
+																<div class="onoffswitch">
+														    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch3" onclick="canvia()">
+														    		<label class="onoffswitch-label" for="myonoffswitch3">
+															    		<div class="onoffswitch-inner">
+																    		<div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+															    			<div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+															    		</div>
+																	</label>
+																</div>
+															</li>
+														</td>
+													</tr>
+													<tr>
+														<td></td>
+														<td align="left"><h3>Difficulty:</h3></td>
+														<td>
+															<li id="filtre4">
+																<div class="onoffswitch">
+														    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch4" onclick="canvia()">
+														    		<label class="onoffswitch-label" for="myonoffswitch4">
+															    		<div class="onoffswitch-inner">
+																    		<div class="onoffswitch-active"><div class="onoffswitch-switch">ON</div></div>
+															    			<div class="onoffswitch-inactive"><div class="onoffswitch-switch">OFF</div></div>
+															    		</div>
+																	</label>
+																</div>
+															</li>
+														</td>
+													</tr>
+												</table>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</section>
+							<section>
+								<table>
+									<tr>
+										<td><h2>Links to Segments found</h2></td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><div id="mostra2" class="arrow-up"></div></td>
+									</tr>
+								</table>
+								<table id="taulaLlistaSegments">
+									<tr>
+										<td>
+											<div class="row" id="llistaVisibleSegments" >
+												<div class="3u">
+													<ul class="link-list last-child" id="llistaSegments">
+													</ul>
+												</div>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</section>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	<!-- Footer -->
+		<div id="footer-wrapper">
+			<footer id="footer" class="container">
+				<div class="row">
+					<div class="8u">
+					
+						<!-- Links -->
+							<section>
+								
+							</section>
+
+					</div>
+				</div>
+			</footer>
+		</div>
+
+	<!-- Copyright -->
+		<div id="copyright">
+			&copy; LOSEC. All rights reserved. | Xavier Fernàndez Soler 
+		</div>
+	</body>
+</html>

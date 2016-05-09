@@ -1,0 +1,791 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Look for a Segments in a Map</title>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    	<style type="text/css">
+      		html { height: 100% }
+      		body { height: 100%; margin: 0; padding: 0 }
+      		#map-canvas { height: 100% }
+    	</style>
+    	<noscript>
+			<link rel="stylesheet" href="css/skel-noscript.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-mobile.css" />
+		</noscript>
+    	<script src="js/init.js"></script>
+    	<script type="text/javascript" language="JavaScript" src="js/jquery.i18n.properties-min.js"></script>
+		<script type="text/javascript"
+	      src="https://maps.googleapis.com/maps/api/js?sensor=true&v=3&libraries=geometry">
+	    </script>
+		<script type="text/javascript">
+			var map;
+			function initialize() {
+
+		    	var options = {
+				  enableHighAccuracy: true,
+				  timeout: 5000,
+				  maximumAge: 3000
+				};
+		    	var mapOptions = {
+				    zoom: 10,
+				    mapTypeId: google.maps.MapTypeId.ROADMAP,
+				    zoomControl: true
+			  	};
+				map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+         
+				if(navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						
+						var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+						var marker = new google.maps.Marker({
+								position: pos,
+								map: map,
+								icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+								title: 'Here you are!.'
+						});
+						var infowindow = new google.maps.InfoWindow({
+							map: map,
+							position: pos,
+							content: 'Here you are!.'
+						});
+						
+						var locationArray = window.localStorage.getItem("locationArray");
+						var locationNameArray =window.localStorage.getItem("locationNameArray");
+						var segmentsInicials = window.localStorage.getItem("segmentsInicials");
+						var arrayValors = locationArray.split(",");
+						var arrayNoms = locationNameArray.split(",");
+						var arrayTotal = segmentsInicials.split(",");
+						var j = 0;
+						var infowindow;
+						
+						var km;
+						var dificultat;
+						var vesADetall;
+						var desnivell;
+						var filtre1 = window.localStorage.getItem("Asc");
+						var filtre2 = window.localStorage.getItem("Desc");
+						var filtre3 = window.localStorage.getItem("filtrekm");
+						var filtre4 = window.localStorage.getItem("Dificultat");
+						var posicio_inici = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+						for (var i =0; i < arrayValors.length; i++) {
+							
+							var posicio_fi = new google.maps.LatLng(arrayValors[i],arrayValors[i+1]);
+							var distancia = google.maps.geometry.spherical.computeDistanceBetween(posicio_inici, posicio_fi);
+							for(var n=0; n<arrayTotal.length; n++){
+				            	var arr = arrayTotal[n].split(";");
+				            	for(var m=0; m<arr.length; m++){
+				            		if(("'"+arr[0]+"'").indexOf(arrayNoms[j]) > -1){
+				            			km = arr[1];
+										dificultat = arr[8];
+										desnivell = arr[9];
+										vesADetall = n;
+				            		}
+				            		break;
+				            	}	
+				            }
+
+							if(filtre1!='false' && filtre2!='false' && filtre3!='false' && filtre4!='false'){ //tots
+								if(distancia <=20000 && (dificultat=='Hard' || dificultat=='Medium-Hard')){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+		    							
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }
+						    }else if(filtre1!='false' && filtre2!='false' && filtre3!='false' && filtre4=='false'){ // nomes els 3 primers
+								if(distancia <=20000){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }
+							}else if(filtre1!='false' && filtre2!='false' && filtre4!='false' && filtre3=='false'){ // nomes els 2 primers i ultim
+								if(dificultat=='Hard' || dificultat=='Medium-Hard'){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }
+							}else if(filtre2!='false' && filtre1=='false' && filtre3=='false' && filtre4=='false'){ //només el 2
+								if(desnivell=='Desc'){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }	
+							}else if(filtre1!='false' && filtre2=='false' && filtre3=='false' && filtre4=='false'){ //només el 1r
+								if(desnivell=='Asc'){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					});
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }
+							}else if(filtre3!='false' && filtre1=='false' && filtre2=='false' && filtre4=='false'){ //només el 3r
+								if(distancia <=20000){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }
+							}else if(filtre4!='false' && filtre1=='false' && filtre2=='false' && filtre3=='false'){ //només el 4t
+								if(dificultat=='Hard' || dificultat=='Medium-Hard'){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }	
+							}else if(filtre3!='false' && filtre4!='false' && filtre1=='false' && filtre2=='false'){ //3r i 4t
+								if(distancia <=20000 && (dificultat=='Hard' || dificultat=='Medium-Hard')){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }
+							}else if(filtre1!='false' && filtre3!='false' && filtre2=='false' && filtre4=='false'){ //1r i 3r
+								if(desnivell=='Asc' && distancia <=20000){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }
+							}else if(filtre1!='false' && filtre4!='false' && filtre2=='false' && filtre3=='false'){ //1r i 4t
+								if(desnivell=='Asc' && (dificultat=='Hard' || dificultat=='Medium-Hard')){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }		
+							}else if(filtre2!='false' && filtre3!='false' && filtre1=='false' && filtre4=='false'){ //2n i 3r
+								if(desnivell=='Desc' && distancia <=20000){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }
+							}else if(filtre2!='false' && filtre4!='false' && filtre1=='false' && filtre3=='false'){ //2n i 4t
+								if(desnivell=='Desc' && (dificultat=='Hard' || dificultat=='Medium-Hard')){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }		
+							}else if(filtre1!='false' && filtre3!='false' && filtre4!='false' && filtre2=='false'){ //1r, 3r i 4t
+								if(desnivell=='Asc' && distancia <=20000 && (dificultat=='Hard' || dificultat=='Medium-Hard')){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }									
+							}else if(filtre1=='false' && filtre3!='false' && filtre4!='false' && filtre2!='false'){ //2r, 3r i 4t
+								if(desnivell=='Desc' && distancia <=20000 && (dificultat=='Hard' || dificultat=='Medium-Hard')){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							            for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }	
+							}else if(filtre1!='false' && filtre3!='false' && filtre4=='false' && filtre2!='false'){ //1r, 2r i 3r
+								if(desnivell=='Asc' || desnivell=='Desc' && distancia <=20000){
+									var marcador = new google.maps.Marker({
+										position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+										title: arrayNoms[j],
+										map: map								
+								    });
+								    
+		    						google.maps.event.addListener(marcador, 'click', function(){
+							            if(!infowindow){
+							                infowindow = new google.maps.InfoWindow();
+							            }
+							           	for(var n=0; n<arrayTotal.length; n++){
+							            	arr = arrayTotal[n].split(";");
+							            	for(var m=0; m<arr.length; m++){
+							            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+							            			km = arr[1];
+		    										dificultat = arr[8];
+		    										desnivell = arr[9];
+		    										vesADetall = n;
+							            		}
+							            		break;
+							            	}	
+							            }	    							
+							            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+							            infowindow.setContent(note);
+							            infowindow.open(map, this);
+		        					})
+		        					
+								    if(i==arrayValors.length-2){
+								    	break;
+								    }
+								    j++;
+								    i++;
+							    }else{
+							    	if(i==arrayValors.length-2){
+								    	break;
+								    }
+							    	j++;
+							    	i++;
+							    }	
+							}else{
+
+								var marcador = new google.maps.Marker({
+									position: new google.maps.LatLng(arrayValors[i],arrayValors[i+1]),
+									title: arrayNoms[j],
+									map: map								
+							    });
+							    
+	    						google.maps.event.addListener(marcador, 'click', function(){
+						            if(!infowindow){
+						                infowindow = new google.maps.InfoWindow();
+						            }
+						            for(var n=0; n<arrayTotal.length; n++){
+						            	arr = arrayTotal[n].split(";");
+						            	for(var m=0; m<arr.length; m++){
+						            		if(("'"+arr[0]+"'").indexOf(this.title) > -1){
+						            			km = arr[1];
+	    										dificultat = arr[8];
+	    										desnivell = arr[9];
+	    										vesADetall = n;
+						            		}
+						            		break;
+						            	}	
+						            }
+						            var note = '<div class="content-wrapper" id="contentInfoWindow' + i + '"><div id="content"><div class="container"><div class="row"><div class="12u"><section><h2>Segment information:</h2><header><h3>Segment name: ' + this.title + '</h3><h3>Difficulty: '+dificultat+'</h3><h3>Kms: '+km+'km</h3><h3>Slope: '+desnivell+'</h3><a href="detall.html" onclick="seteja('+vesADetall+');"><h3>Go to segment details</h3></a></header></section></div></div></div></div></div>';
+						            infowindow.setContent(note);
+						            infowindow.open(map, this);
+	        					})
+	        					
+							    if(i==arrayValors.length-2){
+							    	break;
+							    }
+							    j++;
+							    i++;
+						    }
+						}
+
+					    map.setCenter(pos);
+					    window.localStorage.setItem("Asc","false");
+					    window.localStorage.setItem("Desc","false");
+					    window.localStorage.setItem("filtrekm","false");
+					    window.localStorage.setItem("Dificultat","false");
+					    						
+				    }, function() {
+				       		handleNoGeolocation(true);
+				       }
+				    ,options);
+				} else {
+				    // Browser doesn't support Geolocation
+				    handleNoGeolocation(false);
+				}
+			}
+			
+			function makeInfoWindowEvent(map, infowindow, marker, n) {
+			  google.maps.event.addListener(marker, 'click', function() {
+			    infowindow.open(map, marker);
+			    google.maps.event.addDomListener(document.getElementById('contentInfoWindow' + n), 'click', function(){
+					infowindow.setZIndex(n++);
+				});
+			  });
+			}
+			
+
+			function handleNoGeolocation(errorFlag) {
+				  if (errorFlag) {
+				    var content = 'Error: The Geolocation service failed.';
+				  } else {
+				    var content = 'Error: Your browser doesn\'t support geolocation.';
+				  }
+				
+				  var options = {
+				    map: map,
+				    position: new google.maps.LatLng(60, 105),
+				    content: content
+				  };
+				
+				  var infowindow = new google.maps.InfoWindow(options);
+				  map.setCenter(options.position);
+			}
+			
+		    google.maps.event.addDomListener(window, 'load', initialize); 	// Execute our 'initialize' function once the page has loaded. 
+		</script>
+		<body>
+			<div id="map-canvas" style="height:100%;"></div>
+		</body>
+		
+</html>

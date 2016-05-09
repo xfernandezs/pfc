@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title></title>
+		
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery-latest.js"></script>
+		<script src="js/config.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-panels.min.js"></script>
+		<script src="js/parse.js"></script>
+		<script src="js/init.js"></script>
+		<script type="text/javascript" language="JavaScript" src="js/jquery.i18n.properties-min.js"></script>
+		<script src="http://www.parsecdn.com/js/parse-1.2.12.min.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="css/skel-noscript.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-mobile.css" />
+		</noscript>
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
+		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+
+		<script>
+					
+			
+			$(document).ready(function () {
+				
+			    $('#mostra').click(function () {
+			    	if ($('#asa').is(':hidden')) {
+			        	$('#asa').toggle('1000');
+			        	$('#mostra').removeClass('arrow-down').addClass('arrow-up');
+			       	} else {
+			       		$('#asa').toggle('1000');
+			        	$('#mostra').removeClass('arrow-up').addClass('arrow-down');
+			       	}
+			    });
+			});
+			
+			
+			
+			
+	    </script>
+
+	</head>
+	<body class="subpage" onload="obreDetall()">
+	
+		<!-- Header -->
+			<div id="header-wrapper">
+				<header id="header" class="container">
+					<div class="row">
+						<div class="12u">
+
+							<!-- Logo -->
+								<h1><a href="#" id="logo">Losec</a></h1>
+							
+							<!-- Nav -->
+								<nav id="nav">
+									<a href="index.html">Homepage</a>
+									<a href="ListOfSegments.html">List of Segments</a>
+									<a href="MapForSegments.html">Look for a Segments in a Map</a>
+									<a href="About.html">About</a>
+								</nav>
+
+						</div>
+					</div>
+				</header>
+			</div>
+			
+		<!-- Content -->
+			<div id="content-wrapper">
+				<div id="content">
+					<div class="container">
+						<div class="row">
+							<div class="12u">
+							
+								<!-- Main Content -->
+								<section>
+									<header>
+										<h2>Segment Detail</h2>
+										<h3>Here you can find all the info from a Segment choosed</h3>
+									</header>
+								</section>
+								
+								<section>	
+									<header>
+										<h2>Segment's content</h2>
+										<h3>Here you can find all the content from segment</h3>
+									</header>
+									<div class="row">
+										<div class="3u">
+											<ul class="link-list last-child" id="detallMapa">
+											</ul>
+										</div>
+									</div>
+									<h2>Pictures from start point</h2>
+									<p id="imatges_inici" ></p>
+									<h2>Pictures from end point</h2>
+									<p id="imatges_fi" ></p>
+
+									<table>
+									<tr>
+									<td><h2> Videos from segment </h2></td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><div id="mostra" class="arrow-down"></div></td>
+									</tr>
+									</table>
+									
+									<div id="asa" class="hidden">
+										<p id="videos_segment" ></p>
+									</div>
+
+
+								</section>
+								<section>
+									<header>
+										<h2>Map Detail</h2>
+										<h3>Here you can find the route in a map</h3>
+									</header>
+									<div id="map-canvas" style="width:325px;height:300px;"></div>
+								</section>
+								<section>
+									<h2>Social sharing</h2>
+									<h3>Here you can share this segments with your friends</h3>
+									<div id="tweetBtn"></div>
+								</section>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<!-- Copyright -->
+			<div id="copyright">
+		&copy; LOSEC. All rights reserved. | Xavier Fernàndez Soler 
+			</div>
+	</body>
+</html>
