@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion "18.0.1"
+    compileSdkVersion 19
+    buildToolsVersion "19.0.1"
 
     defaultConfig {
         applicationId "es.uoc.edu.pfc"
         minSdkVersion 7
-        targetSdkVersion 18
+        targetSdkVersion 19
     }
 
     buildTypes {
